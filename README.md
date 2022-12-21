@@ -5,6 +5,252 @@
 * A Inversão de Controle permite delegar a outro elemento o controle sobre como e quando um objeto deve ser criado e quando um método deve ser executado, por exemplo. Assim o controle sobre a execução de alguns comportamentos, passa a ser gerenciado por esse elemento, não cabendo mais aos programadores.
 * Com a Injeção de Dependência a classe deixa de se preocupar em como resolver as suas dependências. Ela passa a manter o foco apenas no uso dos recursos das dependências para realizar as tarefas que precisa. E isso leva a uma das características mais conhecidas quando programamos com Spring: não precisamos utilizar o new para criar os objetos por ele gerenciados, pois isso passa a ser feito pelo framework.
 Esse framework oferece diversos módulos que podem ser utilizados de acordo com as necessidades do projeto, como módulos voltados para desenvolvimento Web, persistência, acesso remoto e programação orientada a aspectos, um breve resumo dos principais módulos estará logo abaixo na decorrência do texto.
+* A linguagem de programação Java forneceu suporte para anotações do Java 5.0. Os principais frameworks Java foram rápidos em adotar anotações e o Spring Framework começou a usar anotações a partir da versão 2.5. Devido à forma como são definidas, as anotações fornecem muito contexto em sua declaração.
+* Antes das anotações, o comportamento do Spring Framework era amplamente controlado por meio da configuração XML. Hoje, o uso de anotações nos fornece capacidades tremendas em como configuramos os comportamentos do Spring Framework.
+
+### Exemplos das principais annotations utilizadas
+* @Configuration --> É uma annotation que indica que determinada classe possui métodos que expõe novos beans.
+```
+@Configuration
+public class DataConfig{ 
+  @Bean
+  public DataSource source(){
+    DataSource source = new OracleDataSource();
+    source.setURL();
+    source.setUser();
+    return source;
+  }
+  @Bean
+  public PlatformTransactionManager manager(){
+    PlatformTransactionManager manager = new BasicDataSourceTransactionManager();
+    manager.setDataSource(source());
+    return manager;
+  }
+}
+´´´
+
+* @Controller --> Associada com classes que possuem métodos que processam requests numa aplicação web.
+```
+@Controller
+public class demoController {
+ 
+    @GetMapping("/")
+    public String hello() {
+        return "Hello World";
+    }
+ 
+    @GetMapping("/hello")
+    public String hello2() {
+        return "Hello World Thiago";
+    }
+}
+´´´
+
+* @Repository --> Associada com classes que isolam o acesso aos dados da sua aplicação. Comumente associada a DAO’s.
+```
+@Repository
+public interface PessoaRepository extends JpaRepository<Pessoa, Long> { }
+´´´
+
+* @Service --> Associada com classes que representam a ideia do Service do Domain Driven Design. Basicamente são classes que representam algum fluxo de negócio da sua aplicação.
+```
+@Service
+public class ApiService  extends Pessoa{
+    @Autowired
+
+    PessoaRepository pessoaRepository;
+
+    public List<Usuario> getUsuarios() {
+        List<Usuario> users = new ArrayList<>();
+        pessoaRepository.findAll().forEach(books1 -> users.add(users.get(1)));
+        return users;
+    }
+
+    public Pessoa getUserByID(int id) {
+        return pessoaRepository.findById((long) id).get();
+    }
+
+    public void saveOrUpdate(Pessoa s) {
+        pessoaRepository.save(s);
+    }
+
+    public void delete(int id) {
+        pessoaRepository.deleteById((long) id);
+    }
+
+    public void update(Pessoa s) {
+        pessoaRepository.save(s);
+    }
+}
+´´´
+
+* @Component --> A annotation básica que indica que uma classe vai ser gerenciada pelo container do Spring. Todas as annotations descritas acima são, na verdade, derivadas de @Component.
+```
+@Component
+public class ExampleApplication {
+     
+    @Autowired
+    private ClientService clientService1;
+     
+    @Autowired
+    @Qualifier(“clientService2”)
+    private ClientService clientService2;
+     
+}
+´´´
+
+* @ComponentScan --> Em geral se usa em classes de configuração(@Configuration) indicando quais pacotes ou classes devem ser scaneadas pelo Spring para que essa configuração funcione.
+```
+@Configuration
+@ComponentScan({
+    "br.com.pacote.projeto.service",
+    "br.com.pacote.projeto.controller"})
+public class ConfiguracaoSpring { ... }
+´´´
+
+* @Bean --> Anotação utilizada em cima dos métodos de uma classe, geralmente marcada com @Configuration, indicando que o Spring deve invocar aquele método e gerenciar o objeto retornado por ele, ou seja, agora este objeto pode ser injetado em qualquer ponto da sua aplicação.
+```
+@Configuration
+public class AppConfig{
+  @Bean
+  public Person person(){
+    return new Person(address());
+  }
+  @Bean
+  public Address address(){
+    return new Address();
+  }
+}
+´´´
+
+* @Autowired --> Anotação utilizada para marcar o ponto de injeção na sua classe. Pode colocar ela sobre atributos ou sobre o seu construtor com argumentos.
+```
+public class Customer {
+    @Autowired                               
+    private Person person;                   
+    private int type;
+}
+´´´
+
+* @Scope --> Utilizada para marcar o tempo de vida de um objeto gerenciado pelo container. Pode ser utilizada em classes anotadas com @Component, ou alguma de suas derivações. Além disso também pode usada em métodos anotados com @Bean. Quando você não utiliza nenhuma, o escopo default do objeto é o de aplicação, o que significa que vai existir apenas uma instância dele durante a execução do programa.
+```
+@Configuration
+public class MyConfiguration {
+	
+	@Bean
+	@Scope(value="singleton")
+    public MyBean myBean() {
+		return new MyBean();
+	}
+	
+}
+´´´
+
+* @RequestMapping --> Geralmente utilizada em cima dos métodos de uma classe anotada com @Controller. Serve para você colocar os endereços da sua aplicação que, quando acessados por algum cliente, deverão ser direcionados para o determinado método.
+```
+@Controller
+@RequestMapping("/welcome")
+public class WelcomeController{
+  @RequestMapping(method = RequestMethod.GET)
+  public String welcomeAll(){
+    return "welcome all";
+  }  
+}
+´´´
+
+
+* @ResponseBody --> Utilizada em métodos anotados com @RequestMapping para indicar que o retorno do método deve ser automaticamente escrito na resposta para o cliente. Muito comum quando queremos retornar JSON ou XML em função de algum objeto da aplicação.
+```
+@RequestMapping(method = RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Produto buscaPorId(Integer id) {
+        return dao.buscaPorId(id);
+    }
+´´´
+
+* @Primary --> Caso você tenha dois métodos anotados com @Bean e com ambos retornando o mesmo tipo de objeto, como o Spring vai saber qual dos dois injetar por default em algum ponto da sua aplicação? É para isso que serve a annotation @Primary. Indica qual é a opção padrão de injeção.
+```
+@Configuration
+public class Config {
+
+    @Bean
+    public Employee JohnEmployee() {
+        return new Employee("John");
+    }
+
+    @Bean
+    @Primary
+    public Employee TonyEmployee() {
+        return new Employee("Tony");
+    }
+}
+´´´
+
+* @Profile --> Indica em qual profile tal bean deve ser carregado. Muito comum quando tem classes que só devem ser carregadas em ambiente de dev ou de produção. 
+```
+@Configuration
+@Profile("qa")
+public class BaseConfiguration {
+
+    @Bean
+    public void doSomething() {
+        // Realiza alguma operação
+    }
+}
+´´´
+
+
+* @SpringBootApplication --> Ela engloba a @Component, @ComponentScan e mais uma chamada @EnableAutoConfiguration, que é utilizada pelo Spring Boot para tentar advinhar as configurações necessárias para rodar o seu projeto.
+```
+@SpringBootApplication
+public class DemoApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(DemoApplication.class, args);
+	}
+
+}
+´´´
+
+* @EnableAsync --> Essa aqui não é tão comum, mas muitas vezes precisa de ações no sistema em background(outra thread).
+```
+@SpringBootApplication
+@EnableAsync
+public class AsyncMethodApplication {
+
+  public static void main(String[] args) {
+    // close the application context to shut down the custom ExecutorService
+    SpringApplication.run(AsyncMethodApplication.class, args).close();
+  }
+
+  @Bean
+  public Executor taskExecutor() {
+    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+    executor.setCorePoolSize(2);
+    executor.setMaxPoolSize(2);
+    executor.setQueueCapacity(500);
+    executor.setThreadNamePrefix("GithubLookup-");
+    executor.initialize();
+    return executor;
+  }
+
+
+}
+´´´
+
+* @Async --> Uma vez que seu projeto habilitou o uso de execução de métodos assíncronos com a @EnableAsync, poderá marcar qualquer método de um bean gerenciado do projeto com essa annotation. Quando tal método for invocado, o Spring vai garantir que a execução dele será em outra thread.
+```
+@Async
+  public CompletableFuture<User> findUser(String user) throws InterruptedException {
+    logger.info("Looking up " + user);
+    String url = String.format("https://api.github.com/users/%s", user);
+    User results = restTemplate.getForObject(url, User.class);
+    // Artificial delay of 1s for demonstration purposes
+    Thread.sleep(1000L);
+    return CompletableFuture.completedFuture(results);
+  }
+´´´
+
 
 ## Spring Boot
 * O Spring Boot busca solucionar a complexidade da inicialização e gerenciamento de dependências de um projeto com Spring, além de tratar de maneira coesa e eficiente a questão da configuração, fazendo uso extensivo de Convention Over Configuration.
