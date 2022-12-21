@@ -1,4 +1,4 @@
-![Spring](https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.websoptimization.com%2Fblog%2Freasons-to-use-spring-framework%2F&psig=AOvVaw2HcmTQyDyq9zj9nMDc9TL_&ust=1671715803783000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCJjs0-foivwCFQAAAAAdAAAAABAp)
+![Spring](https://www.educative.io/v2api/editorpage/5669828520574976/image/6296864620544000)
 
 # Spring Framework
 * O Spring é um framework Java criado com o objetivo de facilitar o desenvolvimento de aplicações, explorando, para isso, os conceitos de Inversão de Controle e Injeção de Dependências (uma das maneiras de implementar a Inversão de Controle). Dessa forma temos uma tecnologia que nos fornece recursos necessários à grande parte das aplicações, como módulos para persistência de dados, integração, segurança, testes, desenvolvimento web, como também nos permite criar soluções menos acopladas, mais coesas e, consequentemente, mais fáceis de compreender e manter.
