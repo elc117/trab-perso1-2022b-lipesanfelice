@@ -27,9 +27,9 @@ public class DataConfig{
     return manager;
   }
 }
-´´´
-
+```
 * @Controller --> Associada com classes que possuem métodos que processam requests numa aplicação web.
+
 ```
 @Controller
 public class demoController {
@@ -44,13 +44,13 @@ public class demoController {
         return "Hello World Thiago";
     }
 }
-´´´
+```
 
 * @Repository --> Associada com classes que isolam o acesso aos dados da sua aplicação. Comumente associada a DAO’s.
 ```
 @Repository
 public interface PessoaRepository extends JpaRepository<Pessoa, Long> { }
-´´´
+```
 
 * @Service --> Associada com classes que representam a ideia do Service do Domain Driven Design. Basicamente são classes que representam algum fluxo de negócio da sua aplicação.
 ```
@@ -82,7 +82,7 @@ public class ApiService  extends Pessoa{
         pessoaRepository.save(s);
     }
 }
-´´´
+```
 
 * @Component --> A annotation básica que indica que uma classe vai ser gerenciada pelo container do Spring. Todas as annotations descritas acima são, na verdade, derivadas de @Component.
 ```
@@ -97,7 +97,7 @@ public class ExampleApplication {
     private ClientService clientService2;
      
 }
-´´´
+```
 
 * @ComponentScan --> Em geral se usa em classes de configuração(@Configuration) indicando quais pacotes ou classes devem ser scaneadas pelo Spring para que essa configuração funcione.
 ```
@@ -106,7 +106,7 @@ public class ExampleApplication {
     "br.com.pacote.projeto.service",
     "br.com.pacote.projeto.controller"})
 public class ConfiguracaoSpring { ... }
-´´´
+```
 
 * @Bean --> Anotação utilizada em cima dos métodos de uma classe, geralmente marcada com @Configuration, indicando que o Spring deve invocar aquele método e gerenciar o objeto retornado por ele, ou seja, agora este objeto pode ser injetado em qualquer ponto da sua aplicação.
 ```
@@ -121,7 +121,7 @@ public class AppConfig{
     return new Address();
   }
 }
-´´´
+```
 
 * @Autowired --> Anotação utilizada para marcar o ponto de injeção na sua classe. Pode colocar ela sobre atributos ou sobre o seu construtor com argumentos.
 ```
@@ -130,7 +130,7 @@ public class Customer {
     private Person person;                   
     private int type;
 }
-´´´
+```
 
 * @Scope --> Utilizada para marcar o tempo de vida de um objeto gerenciado pelo container. Pode ser utilizada em classes anotadas com @Component, ou alguma de suas derivações. Além disso também pode usada em métodos anotados com @Bean. Quando você não utiliza nenhuma, o escopo default do objeto é o de aplicação, o que significa que vai existir apenas uma instância dele durante a execução do programa.
 ```
@@ -144,7 +144,7 @@ public class MyConfiguration {
 	}
 	
 }
-´´´
+```
 
 * @RequestMapping --> Geralmente utilizada em cima dos métodos de uma classe anotada com @Controller. Serve para você colocar os endereços da sua aplicação que, quando acessados por algum cliente, deverão ser direcionados para o determinado método.
 ```
@@ -156,7 +156,7 @@ public class WelcomeController{
     return "welcome all";
   }  
 }
-´´´
+``` 
 
 
 * @ResponseBody --> Utilizada em métodos anotados com @RequestMapping para indicar que o retorno do método deve ser automaticamente escrito na resposta para o cliente. Muito comum quando queremos retornar JSON ou XML em função de algum objeto da aplicação.
@@ -166,7 +166,7 @@ public class WelcomeController{
     public Produto buscaPorId(Integer id) {
         return dao.buscaPorId(id);
     }
-´´´
+```
 
 * @Primary --> Caso você tenha dois métodos anotados com @Bean e com ambos retornando o mesmo tipo de objeto, como o Spring vai saber qual dos dois injetar por default em algum ponto da sua aplicação? É para isso que serve a annotation @Primary. Indica qual é a opção padrão de injeção.
 ```
@@ -184,7 +184,7 @@ public class Config {
         return new Employee("Tony");
     }
 }
-´´´
+```
 
 * @Profile --> Indica em qual profile tal bean deve ser carregado. Muito comum quando tem classes que só devem ser carregadas em ambiente de dev ou de produção. 
 ```
@@ -197,7 +197,7 @@ public class BaseConfiguration {
         // Realiza alguma operação
     }
 }
-´´´
+```
 
 
 * @SpringBootApplication --> Ela engloba a @Component, @ComponentScan e mais uma chamada @EnableAutoConfiguration, que é utilizada pelo Spring Boot para tentar advinhar as configurações necessárias para rodar o seu projeto.
@@ -210,7 +210,7 @@ public class DemoApplication {
 	}
 
 }
-´´´
+```
 
 * @EnableAsync --> Essa aqui não é tão comum, mas muitas vezes precisa de ações no sistema em background(outra thread).
 ```
@@ -236,7 +236,7 @@ public class AsyncMethodApplication {
 
 
 }
-´´´
+```
 
 * @Async --> Uma vez que seu projeto habilitou o uso de execução de métodos assíncronos com a @EnableAsync, poderá marcar qualquer método de um bean gerenciado do projeto com essa annotation. Quando tal método for invocado, o Spring vai garantir que a execução dele será em outra thread.
 ```
@@ -249,7 +249,7 @@ public class AsyncMethodApplication {
     Thread.sleep(1000L);
     return CompletableFuture.completedFuture(results);
   }
-´´´
+```
 
 
 ## Spring Boot
